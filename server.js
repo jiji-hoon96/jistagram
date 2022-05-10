@@ -1,11 +1,15 @@
+require("dotenv").config();
 import { ApolloServer } from "apollo-server";
-import { resolvers, typeDefs } from "./schema";
+import schema from "./schema.js";
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
 });
 
+const PORT = process.env.PORT;
+
 server
-  .listen()
-  .then(() => console.log("서버가 http://localhost:4000/ 에서 작동중입니다"));
+  .listen(PORT)
+  .then(() =>
+    console.log(`서버가 http://localhost:${PORT}/ 에서 작동중입니다`)
+  );
