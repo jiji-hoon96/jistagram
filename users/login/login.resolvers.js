@@ -19,6 +19,7 @@ export default {
           error: "Incorrect password.",
         };
       }
+      //로그인에 성공하면 token 발행
       const token = await jwt.sign({ id: user.id }, process.env.SECRET_KEY);
       return {
         ok: true,

@@ -5,15 +5,17 @@ export default {
   Mutation: {
     editProfile: async (
       _,
-      { firstname, lastName, userName, email, password: newPassword }
+      { firstname, lastName, userName, email, password: newPassword },
+      { loggedInUser }
     ) => {
+      console.log(loggedInUser);
       let passwordHash = null; // const로 하면 read-only가 된다
       if (newPassword) {
         passwordHash = await bcrypt.hash(newPassword, 10);
       }
       const updateUser = await client.user.update({
         where: {
-          id: 4,
+          id: loggedInUser.id,
         },
         data: {
           firstname,
