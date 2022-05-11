@@ -1,5 +1,6 @@
 import client from "../client";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export default {
   Mutation: {
@@ -51,6 +52,11 @@ export default {
         };
       }
       //3. 1번과 2번이 성공하면 user에게 token(user id)를 전달
+      const token = await jwt.sign({ id: user.id }, process.env.SECRET_KEY);
+      return {
+        ok: true,
+        token,
+      };
     },
   },
 };
