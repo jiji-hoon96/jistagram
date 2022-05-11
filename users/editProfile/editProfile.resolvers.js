@@ -1,40 +1,42 @@
 import bcrypt from "bcrypt";
 import client from "../../client";
+import { protectResolver } from "../users.utils";
 
 export default {
   Mutation: {
-    editProfile: async (
-      _,
-      { firstname, lastName, userName, email, password: newPassword },
-      { loggedInUser }
-    ) => {
-      console.log(loggedInUser);
-      let passwordHash = null; // const로 하면 read-only가 된다
-      if (newPassword) {
-        passwordHash = await bcrypt.hash(newPassword, 10);
+    editProfile: protectResolver(
+      async (
+        _,
+        { firstName, lastName, username, email, password: newPassword },
+        { loggedInUser }
+      ) => {
+        let passwordHash = null;
+        if (newPassword) {
+          passwordHash = await bcrypt.hash(newPassword, 10);
+        }
+        const updatedUser = await client.user.update({
+          where: {
+            id: loggedInUser.id,
+          },
+          data: {
+            firstName,
+            lastName,
+            username,
+            email,
+            ...(passwordHash && { password: passwordHash }),
+          },
+        });
+        if (updatedUser.id) {
+          return {
+            ok: true,
+          };
+        } else {
+          return {
+            ok: false,
+            error: "Could not update profile.",
+          };
+        }
       }
-      const updateUser = await client.user.update({
-        where: {
-          id: loggedInUser.id,
-        },
-        data: {
-          firstname,
-          lastName,
-          userName,
-          email,
-          ...(passwordHash && { password: passwordHash }),
-        },
-      });
-      if (updateUser.id) {
-        return {
-          ok: true,
-        };
-      } else {
-        return {
-          ok: false,
-          error: "프로필을 수정할 수 없습니다",
-        };
-      }
-    },
+    ),
   },
 };
