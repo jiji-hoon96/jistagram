@@ -11,10 +11,10 @@ export default {
             id,
             userId: loggedInUser.id,
           },
-          include:{
-            hashtags:{
-              select:{
-                hashtag:true,
+          include: {
+            hashtags: {
+              select: {
+                hashtag: true,
               }
             }
           }
@@ -25,18 +25,21 @@ export default {
             error: "Photo not found.",
           };
         }
-        const photo = await client.photo.update({
+        await client.photo.update({
           where: {
             id,
           },
           data: {
             caption,
-            hashtags:{
+            hashtags: {
               disconnect: oldphoto.hashtags,
               connectOrCreate: processHashtags(caption),
             }
           },
         });
+        return {
+          ok: true,
+        }
       }
     ),
   },
