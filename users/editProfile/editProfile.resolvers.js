@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import client from "../../client";
 import { protectedResolver } from "../users.utils";
 import { GraphQLUpload } from "graphql-upload";
+import { uploadPhoto } from "../../shared/shared.utils";
 
 const resolverFn = async (
   _,
@@ -12,6 +13,8 @@ const resolverFn = async (
   let avatarUrl = null;
   let passwordHash = null;
   if (avatar) {
+    avatarUrl = await uploadPhoto(avatar, loggedInUser.id);
+    /*
     const { filename, createReadStream } = await avatar;
     const newFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
     const readStream = createReadStream();
@@ -20,6 +23,7 @@ const resolverFn = async (
     );
     readStream.pipe(writeStream);
     avatarUrl = `http://localhost:4000/static/${newFilename}`;
+    */
   }
   if (newPassword) {
     passwordHash = await bcrypt.hash(newPassword, 10);
