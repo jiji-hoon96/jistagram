@@ -6,6 +6,7 @@ import logger from "morgan";
 import { typeDefs, resolvers } from "./schema.js";
 import { getUser } from "./users/users.utils";
 
+
 const PORT = process.env.PORT;
 
 const startServer = async () => {
